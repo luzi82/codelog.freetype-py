@@ -1,0 +1,9 @@
+__pycache__
+*.pyc
+.project
+.DS_Store
+calibration.json
+/input
+/output
+/add_sample
+/cache
