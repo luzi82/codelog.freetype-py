@@ -177,6 +177,7 @@ if __name__ == '__main__':
         text = ''.join(random.choice(CHAR_SET) for _ in range(text_len))
         font_size = random.randint(24*64,48*64)
         draw_type = random.choice(['FILL', 'STROKE_DOWN', 'STROKE_UP'])
+        noise = random.random()
         if draw_type=='FILL':
             stroke_radius = 0
         else:
@@ -215,6 +216,8 @@ if __name__ == '__main__':
         img_hwc = bg_color.reshape((1,1,3))
         img_hwc = np.repeat(img_hwc,width,axis=1)
         img_hwc = np.repeat(img_hwc,height,axis=0)
+        
+        img_hwc = img_hwc + (np.random.rand(height,width,3)*noise)
         
         if draw_type == 'STROKE_DOWN':
             draw(img_hwc[y_offset:y_offset+zh,:,:], stroke_color, stroke_z)
