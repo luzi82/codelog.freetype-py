@@ -45,14 +45,19 @@ def create_text(text, font_info, fill=True, stroke=False, stroke_radius=0):
     slot = face.glyph
 
     # First pass to compute bbox
+    width2 = 0
     width = 0
     previous = 0
     for c in text:
         face.load_char(c)
         bitmap = slot.bitmap
         kerning = face.get_kerning(previous, c)
+        width2 = width + bitmap.width + (kerning.x >> 6)
         width += (slot.advance.x >> 6) + (kerning.x >> 6)
         previous = c
+
+    width = max(width,width2)
+    width += 1
 
     width  += stroke_radius*2
     Z = np.zeros((height,width), dtype=np.int)
@@ -108,11 +113,17 @@ def create_text(text, font_info, fill=True, stroke=False, stroke_radius=0):
 
 if __name__ == '__main__':
 
+    #TEXT = 'Hello World !'
+    #SIZE = 48*64
+    TEXT = 'SpPdyALJV'
+    SIZE = 2576
+    RADIUS = 4
+
     face = freetype.Face(os.path.join('font_set','Vera.ttf'))
     face.set_char_size( 48*64 )
     
-    font_info = create_font_info(face,CREATE_FONT_INFO_TEXT_USED_DEFAULT+'!')
-    Z = create_text('Hello World !', font_info, fill=False, stroke=True, stroke_radius=1)
+    font_info = create_font_info(face,CREATE_FONT_INFO_TEXT_USED_DEFAULT)
+    Z = create_text(TEXT, font_info, fill=False, stroke=True, stroke_radius=RADIUS)
 
     plt.figure(figsize=(10, 10*Z.shape[0]/float(Z.shape[1])))
     plt.imshow(Z, interpolation='nearest', origin='upper', cmap=plt.cm.gray)
